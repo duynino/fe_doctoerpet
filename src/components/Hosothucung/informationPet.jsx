@@ -59,6 +59,11 @@ const InformationPet = (pet) => {
 
     const getDataPet = async () => {
         try {
+            if (!pet?.pet?.petID) {
+                console.error("petID không hợp lệ:", pet);
+                setFormData({});
+                return;
+            }
             const response = await ApiInstance.get(`/pet/${pet?.pet?.petID}`);
             setFormData({
                 name: response.data.name || "",

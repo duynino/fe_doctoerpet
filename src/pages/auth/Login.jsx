@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import ApiInstance from "../../axios/index";
+import axios from "axios";
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -17,8 +18,8 @@ const Login = () => {
         e.preventDefault(); // Ngăn reload trang khi submit form
 
         try {
-            // const response = await axios.post("http://localhost:8080/auth/login", { username, password });
-            const response = await ApiInstance.post("/auth/login", { username, password });
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, { username, password });
+            // const response = await ApiInstance.post("/auth/login", { username, password });
             const { token, accountResponse } = response.data;
             localStorage.setItem("token", token);
             localStorage.setItem("account", JSON.stringify(accountResponse));

@@ -59,10 +59,18 @@ const VaccinationLog = (pet) => {
 
     // get vaccince log from backend
     const getVaccinationLog = () => {
+        if (!pet?.pet?.petID) {
+            console.error("petID không hợp lệ:", pet);
+            setVaccinationLog([]);
+            return;
+        }
         ApiInstance.get(`/vac/pet/${pet?.pet?.petID}`)
             .then((response) => {
-                setVaccinationLog(response.data);
-                console.log("Danh sách vắc xin:", response.data);
+                // Check if response.data is an array
+                const data = response.data;
+                const vaccineList = Array.isArray(data) ? data : data?.data ?? [];
+                setVaccinationLog(vaccineList);
+                console.log("Danh sách vắc xin:", vaccineList);
             })
             .catch((error) => {
                 console.error("Lỗi khi lấy thông tin vắc xin:", error);

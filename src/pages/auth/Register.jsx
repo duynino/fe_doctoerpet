@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import HeaderPage from "../../components/header";
 import FooterPage from "../../components/footer";
 import { Container, TextField, Button, Typography, Box, Link } from "@mui/material";
@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import ApiInstance from "../../axios/index";
-
+import axios from "axios";
 
 const Register = () => {
     const [username, setUsername] = useState("");
@@ -14,52 +14,20 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-
-    const handleSubmit = () => {
-        try{
-            const response = ApiInstance.post("/auth/register", {
-                username: username,
-                email: email,
-                password: password,
-            });
-            console.log("Đăng ký thành công:", response.data);
-            toast.success("Đăng ký thành công!");
-            navigate("/login"); // Chuyển hướng đến trang đăng nhập
-            // // 3. Reset form
-            // setUsername("");
-            // setEmail("");
-            // setPassword("");
-
-        }catch (error) {
-            console.error("Lỗi đăng ký:", error.response);
-            // 5. Xử lý lỗi từ server
-            if (error.response && error.response.data.message) {
-                toast.error(error.response.data.message); // Ví dụ: "Email đã tồn tại"
-            } else {
-                //toast.error("Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.");
-                toast.error(error.response.data);
-            }
-        }
-
-    // 2. Gửi dữ liệu lên server
-    // axios
-    //     .post("http://localhost:8080/auth/register", {
-    //         username: username,
-    //         email: email,
-    //         password: password,
-    //     })
-    //     .then((response) => {
+     const handleSubmit = () => {
+    //     try {
+    //         const response = ApiInstance.post("/auth/register", formData);
     //         console.log("Đăng ký thành công:", response.data);
     //         toast.success("Đăng ký thành công!");
     //         navigate("/login"); // Chuyển hướng đến trang đăng nhập
     //         // 3. Reset form
-    //         setUsername("");
-    //         setEmail("");
-    //         setPassword("");
-    //     })
-    //     .catch((error) => {
+    //         setFormData({
+    //             username: "",
+    //             email: "",
+    //             password: "",
+    //         });
+    //     } catch (error) {
     //         console.error("Lỗi đăng ký:", error.response);
-
     //         // 5. Xử lý lỗi từ server
     //         if (error.response && error.response.data.message) {
     //             toast.error(error.response.data.message); // Ví dụ: "Email đã tồn tại"
@@ -67,8 +35,36 @@ const Register = () => {
     //             //toast.error("Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.");
     //             toast.error(error.response.data);
     //         }
-    //     });
-};
+    //     }
+
+        // 2. Gửi dữ liệu lên server
+        axios
+            .post(`${import.meta.env.VITE_BACKEND_URL}/auth/register`, {
+                username: username,
+                email: email,
+                password: password,
+            })
+            .then((response) => {
+                console.log("Đăng ký thành công:", response.data);
+                toast.success("Đăng ký thành công!");
+                navigate("/login"); // Chuyển hướng đến trang đăng nhập
+                // 3. Reset form
+                setUsername("");
+                setEmail("");
+                setPassword("");
+            })
+            .catch((error) => {
+                console.error("Lỗi đăng ký:", error.response);
+
+                // 5. Xử lý lỗi từ server
+                if (error.response && error.response.data.message) {
+                    toast.error(error.response.data.message); // Ví dụ: "Email đã tồn tại"
+                } else {
+                    //toast.error("Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.");
+                    toast.error(error.response.data);
+                }
+            });
+    };
     return (
         <div>
             <HeaderPage />
@@ -85,7 +81,7 @@ const Register = () => {
                         name="username"
                         variant="outlined"
                         value={username}
-                        onChange={(e) => setUsername(e.target.value) }
+                        onChange={(e) => setUsername(e.target.value)}
                     />
                     <TextField
                         required
