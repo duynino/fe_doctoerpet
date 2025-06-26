@@ -24,6 +24,8 @@ import AddIcon from "@mui/icons-material/Add";
 import ApiInstance from "../../axios/index";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { formatDateDay } from "../../components/convertDate/convertDate";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DiseaseLog = (pet) => {
     const [Diseases, setDiseases] = useState([]);
