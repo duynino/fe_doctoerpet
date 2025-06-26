@@ -17,6 +17,20 @@ import {
 } from "@mui/material";
 import { Star } from "@mui/icons-material";
 
+import imageProduct1 from "../../assets/imageProduct/food/Today_Dinner.jpg";
+import imageProduct2 from "../../assets/imageProduct/food/Royal_Canin_Kitten.png";
+import imageProduct3 from "../../assets/imageProduct/food/Smartheart_Puppy.jpg";
+import imageProduct4 from "../../assets/imageProduct/food/hat-Ganador-2.jpg";
+import imageProduct5 from "../../assets/imageProduct/food/Pate_Hug.webp";
+import imageProduct6 from "../../assets/imageProduct/food/Whiskas_dult_Tuna.jpg";
+import imageProduct7 from "../../assets/imageProduct/food/Me_O_Tuna_Canned.jpg";
+import imageProduct8 from "../../assets/imageProduct/food/Me_O_Tuna_Flavor.webp";
+import imageProduct9 from "../../assets/imageProduct/food/Catrang.webp";
+import imageProduct10 from "../../assets/imageProduct/phuKien/Vong_co.jpg";
+import imageProduct11 from "../../assets/imageProduct/phuKien/kay_ve_sinh.webp";
+import imageProduct12 from "../../assets/imageProduct/phuKien/ban_chai_long.webp";
+
+
 const brands = [
     { id: "loai1", companyName: "Hạt khô" },
     { id: "loai2", companyName: "Pate ướt" },
@@ -31,52 +45,100 @@ const pets = [
 const products = [
     {
         id: 1,
-        name: "Product 1",
-        image: "/src/assets/imageShop/img_slider_home_circle_1.png",
-        price: 100,
+        name: "Today Dinner (1 kg) Hạt cho mèo",
+        image: imageProduct1,
+        price: 85000,
         salePrice: 80,
         starRating: 4,
     },
     {
         id: 2,
-        name: "Product 2",
-        image: "/src/assets/imageShop/img_slider_home_circle_2.png",
-        price: 200,
+        name: "Royal Canin Kitten 400g",
+        image: imageProduct2,
+        price: 115000,
         salePrice: 150,
         starRating: 5,
     },
     {
         id: 3,
-        name: "Product 3",
-        image: "/src/assets/imageShop/img_slider_home_circle_3.png",
-        price: 300,
+        name: "Smartheart Pupp 1,5 kg",
+        image: imageProduct3,
+        price: 115000,
         salePrice: 250,
         starRating: 3,
     },
     {
-        id: 3,
-        name: "Product 4",
-        image: "/src/assets/imageShop/img_slider_home_circle_3.png",
-        price: 300,
+        id: 4,
+        name: "Hạt Ganador cún trưởng thành 1,5 kg",
+        image: imageProduct4,
+        price: 75000,
         salePrice: 250,
         starRating: 3,
     },
     {
-        id: 3,
-        name: "Product 5",
-        image: "/src/assets/imageShop/img_slider_home_circle_3.png",
-        price: 300,
+        id: 5,
+        name: "Pate Hug cho cún 85g",
+        image: imageProduct5,
+        price: 19000,
         salePrice: 250,
         starRating: 3,
     },
     {
-        id: 3,
-        name: "Product 6",
-        image: "/src/assets/imageShop/img_slider_home_circle_3.png",
-        price: 300,
+        id: 6,
+        name: "Whiskas Adult Tuna 1.2kg",
+        image: imageProduct6,
+        price: 120000,
         salePrice: 250,
         starRating: 3,
     },
+    {
+        id: 7,
+        name: "Me_O Tuna Canned 80g",
+        image: imageProduct7,
+        price: 20000,
+        salePrice: 250,
+        starRating: 3,
+    },
+    {
+        id: 8,
+        name: "Me_O Tuna Flavor 450g",
+        image: imageProduct8,
+        price: 54000,
+        salePrice: 250,
+        starRating: 3,
+    },
+    {
+        id: 9,
+        name: "Catrang (Hạt cho thú cưng đến từ Hàn Quốc) 5 KG",
+        image: imageProduct9,
+        price: 380000,
+        salePrice: 250,
+        starRating: 3,
+    },
+    {
+        id: 10,
+        name: "Vòng cổ có chuông",
+        image: imageProduct10,
+        price: 23000,
+        salePrice: 250,
+        starRating: 3,
+    },
+    {
+        id: 11,
+        name: "Khay vệ sinh (cho mèo)",
+        image: imageProduct11,
+        price: 99000,
+        salePrice: 250,
+        starRating: 3,
+    },
+    {
+        id: 12,
+        name: "Bàn chải lông cho thú cưng",
+        image: imageProduct12,
+        price: 30000,
+        salePrice: 250,
+        starRating: 3,
+    },  
 ];
 
 const ProductSearch = () => {

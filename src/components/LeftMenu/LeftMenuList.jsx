@@ -26,7 +26,8 @@ const pets = [
 
 
 const LeftMenuList = () => {
-    
+    // lay user từ localStorage
+  
     return (
         <Box p={2}>
             <Typography variant="h5" gutterBottom>

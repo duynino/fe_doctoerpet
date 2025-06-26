@@ -4,20 +4,36 @@ import FooterPage from "../../components/footer";
 import CategorySlider from "../../components/CategorySlider";
 import RecommendedProducts from "../../components/RecommendedProducts";
 import { Box, Container, Typography, Grid, Button, Link } from "@mui/material";
+import bannar1 from "../../assets/imageShop/home3.png";
+import bannar2 from "../../assets/imageShop/a1_mob.png";
+import bannar3 from "../../assets/imageShop/a2_mob.png";
+
+import galleryItem1 from "../../assets/imageShop/gallery_item_1.png";
+import galleryItem2 from "../../assets/imageShop/gallery_item_2.png";
+import galleryItem3 from "../../assets/imageShop/gallery_item_3.png";
+import galleryItem4 from "../../assets/imageShop/gallery_item_4.png";
+import galleryItem5 from "../../assets/imageShop/gallery_item_5.png";
+import galleryItem6 from "../../assets/imageShop/gallery_item_6.png";
+import galleryItem7 from "../../assets/imageShop/gallery_item_7.png";
+import galleryItem8 from "../../assets/imageShop/gallery_item_8.png";
+import galleryItem9 from "../../assets/imageShop/gallery_item_9.png";
+import galleryItem10 from "../../assets/imageShop/gallery_item_10.png";
+import galleryItem11 from "../../assets/imageShop/gallery_item_11.png";
+import galleryItem12 from "../../assets/imageShop/gallery_item_12.png";
 
 const galleryImages = [
-    "gallery_item_1.png",
-    "gallery_item_2.png",
-    "gallery_item_3.png",
-    "gallery_item_4.png",
-    "gallery_item_5.png",
-    "gallery_item_6.png",
-    "gallery_item_7.png",
-    "gallery_item_8.png",
-    "gallery_item_9.png",
-    "gallery_item_10.png",
-    "gallery_item_11.png",
-    "gallery_item_12.png",
+    galleryItem1,
+    galleryItem2,
+    galleryItem3,
+    galleryItem4,
+    galleryItem5,
+    galleryItem6,
+    galleryItem7,
+    galleryItem8,
+    galleryItem9,
+    galleryItem10,
+    galleryItem11,
+    galleryItem12,
 ];
 
 const HomePage = () => {
@@ -27,7 +43,7 @@ const HomePage = () => {
             <div className="w-100" style={{ minHeight: "500px" }}>
                 <Box
                     component="img"
-                    src="/src/assets/imageShop/home3.png"
+                    src={bannar1}
                     alt="banner"
                     sx={{ width: "100%" }}
                 />
@@ -41,7 +57,7 @@ const HomePage = () => {
                         <Box width="50%">
                             <Box
                                 component="img"
-                                src="/src/assets/imageShop/a1_mob.png"
+                                src={bannar2}
                                 alt="Puppy Shop"
                                 sx={{ width: "100%" }}
                             />
@@ -57,7 +73,7 @@ const HomePage = () => {
                         <Box width="50%">
                             <Box
                                 component="img"
-                                src="/src/assets/imageShop/a2_mob.png"
+                                src={bannar3}
                                 alt="Kitten Shop"
                                 sx={{ width: "100%" }}
                             />
@@ -89,7 +105,7 @@ const HomePage = () => {
                                     <Link href="#" underline="none" sx={{ cursor: "pointer" }}>
                                         <Box
                                             component="img"
-                                            src={`/src/assets/imageShop/${imgName}`}
+                                            src={imgName}
                                             alt={`Gallery item ${index + 1}`}
                                             sx={{ width: "100%" }}
                                         />

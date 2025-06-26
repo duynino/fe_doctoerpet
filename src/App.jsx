@@ -7,10 +7,15 @@ import HomePage from "./pages/homepage/homepage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ProductDetail from "./pages/ProductDetails/ProductDetail";
-import ProductSearch from "./pages/ProductSearchList/ProducTSearch";
+import ProductSearch from "./pages/ProductSearchList/ProductSearch";
 import ForgotPassword from "./pages/auth/Forgot";
 import ResetPasswordPage from "./pages/auth/ResetPassword";
 import ProfilePet from "./components/Hosothucung/ProfilePet";
+import GioHang from "./pages/GioHang/GioHang";
+import MangerUser from "./pages/Admin/MangerUser";
+import MangerSupplier from "./pages/Admin/ManageSupplier";
+import MangerCategory from "./pages/Admin/MangeCategory";
+import MangerProduct from "./pages/Admin/MangeProduct";
 
 function App() {
     return (
@@ -35,9 +40,21 @@ function App() {
                 <Route path="/petProfile" element={<ProfilePet />} />
 
                 {/* Đường dẫn cho trang chi tiết sản phẩm */}
-                <Route path="/productDetail" element={<ProductDetail />} />
+                <Route path="/productDetail/:id" element={<ProductDetail />} />
 
                 <Route path="/productSearch" element={<ProductSearch />} />
+
+                {/* Đường dẫn cho trang giỏ hàng */}
+                <Route path="/giohang" element={<GioHang />} />
+
+                {/* Các đường dẫn khác có thể thêm vào đây */}
+                <Route path="/admin/manage-manager" element={<MangerUser />} />
+
+                <Route path="/admin/manage-supplier" element={<MangerSupplier />} />
+
+                <Route path="/admin/manage-category" element={<MangerCategory />} />
+
+                <Route path="/admin/manage-product" element={<MangerProduct />} />
             </Routes>
 
             <ToastContainer />

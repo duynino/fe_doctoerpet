@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import HeaderPage from "../../components/header";
 import FooterPage from "../../components/footer";
 import { Container, TextField, Button, Typography, Box, Link, Alert } from "@mui/material";
-import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import ApiInstance from "../../axios/index";
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -17,7 +17,8 @@ const Login = () => {
         e.preventDefault(); // Ngăn reload trang khi submit form
 
         try {
-            const response = await axios.post("http://localhost:8080/auth/login", { username, password });
+            // const response = await axios.post("http://localhost:8080/auth/login", { username, password });
+            const response = await ApiInstance.post("/auth/login", { username, password });
             const { token, accountResponse } = response.data;
             localStorage.setItem("token", token);
             localStorage.setItem("account", JSON.stringify(accountResponse));

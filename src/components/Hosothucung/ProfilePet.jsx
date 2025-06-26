@@ -28,6 +28,8 @@ import AddIcon from "@mui/icons-material/Add";
 import ApiInstance from "../../axios/index"; // Adjust the import path as necessary
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProfilePet = () => {
     const [pets, setPets] = React.useState([]);
@@ -102,10 +104,12 @@ const ProfilePet = () => {
             const response = await ApiInstance.post("/pet/addPet", formData);
             console.log("Pet created successfully:", response.data);
             console.log("Form data to be submitted:", formData);
+            toast.success("Thêm hồ sơ thú cưng thành công!");
             setOpen(false);
             fetchPets(); // Refresh the pet list after adding a new pet
         } catch (error) {
             console.error("Error creating pet:", error);
+            toast.error("Thêm hồ sơ thú cưng thất bại!");
         }
     }
 

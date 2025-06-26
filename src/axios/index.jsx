@@ -13,7 +13,8 @@ export const request = async (config) => {
 };
 
 const ApiInstance = axios.create({
-  baseURL: "http://localhost:8080",
+  // baseURL: "http://localhost:8080",
+  baseURL: import.meta.env.VITE_BACKEND_URL, // Thay thế bằng URL của API thực tế
 });
 
 ApiInstance.interceptors.request.use(request);

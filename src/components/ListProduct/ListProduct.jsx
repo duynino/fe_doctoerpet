@@ -1,7 +1,17 @@
 import React from "react";
-import { Grid, Card, CardMedia, CardContent, Typography, Button } from "@mui/material";
+import {
+    Grid,
+    Card,
+    CardMedia,
+    CardContent,
+    Typography,
+    Button,
+    Box,
+    CardActionArea,
+} from "@mui/material";
 import { Rating } from "@mui/material";
 import { Container } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const ListProduct = ({ products }) => {
     return (
@@ -10,39 +20,54 @@ const ListProduct = ({ products }) => {
             <Grid container spacing={2}>
                 {products && products.length > 0 ? (
                     products.map((product) => (
-                        <Grid item xs={12} sm={6} md={2} key={product.id}>
-                            <Card>
-                                <CardMedia
-                                    component="img"
-                                    image={product.image}
-                                    alt={product.name}
-                                    style={{ objectFit: "cover", height: "200px" }}
-                                />
-                                <CardContent>
-                                    <Typography
-                                        variant="h5"
-                                        component="div"
-                                        style={{ whiteSpace: "pre-line" }}
-                                    >
-                                        {product.name}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Giá:{" "}
-                                        <span style={{ textDecoration: "line-through" }}>
-                                            ${product.price}
-                                        </span>
-                                        <span style={{ color: "red" }}> ${product.salePrice}</span>
-                                    </Typography>
-                                    <Rating name="read-only" value={product.starRating} readOnly />
-                                    <br />
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        href={`cart?id=${product.id}`}
-                                    >
-                                        Add to cart
-                                    </Button>
-                                </CardContent>
+                        <Grid item xs={12} sm={6} md={2} key={product.id} size={3}>
+                            <Card style={{ height: "100%" }}>
+                                <CardActionArea
+                                    component={Link}
+                                    to={`/productDetail/${product.id}`}
+                                    sx={{ display: "block" }}
+                                >
+                                    <CardMedia
+                                        component="img"
+                                        image={product.image}
+                                        alt={product.name}
+                                        style={{
+                                            objectFit: "cover",
+                                            height: "200px",
+                                            width: "100%",
+                                        }}
+                                    />
+                                    <CardContent>
+                                        <Typography
+                                            variant="h6"
+                                            component="div"
+                                            style={{ whiteSpace: "pre-line" }}
+                                        >
+                                            {product.name}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            Giá:{" "}
+                                            {/* <span style={{ textDecoration: "line-through" }}>
+                                            {product.price.toLocaleString("vi-VN")}
+                                        </span> */}
+                                            <span> {product.price.toLocaleString("vi-VN")}VND</span>
+                                        </Typography>
+                                        <Rating
+                                            name="read-only"
+                                            value={product.starRating}
+                                            readOnly
+                                        />
+                                        <br />
+                                        {/* <Button
+                                            variant="contained"
+                                            color="primary"
+                                            to={`/productDetail?id=${product.id}`}
+                                            component={Link}
+                                        >
+                                            Add to cart
+                                        </Button> */}
+                                    </CardContent>
+                                </CardActionArea>
                             </Card>
                         </Grid>
                     ))

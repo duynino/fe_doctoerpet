@@ -24,6 +24,9 @@ import AddIcon from "@mui/icons-material/Add";
 import ApiInstance from "../../axios/index";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { formatDateDay } from "../../components/convertDate/convertDate";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const DiseaseLog = (pet) => {
     const [Diseases, setDiseases] = useState([]);
@@ -143,8 +146,11 @@ const DiseaseLog = (pet) => {
                 prev.filter((disease) => disease.diseaseLogId !== currentDisease.diseaseLogId)
             );
             setOpenDelete(false);
+            toast.success("Xóa bệnh thành công!");
         } catch (error) {
             console.error("Lỗi khi xóa bệnh:", error);
+            toast.error("Xóa bệnh thất bại!");
+            setOpenDelete(false);
         }
     };
 
@@ -156,14 +162,18 @@ const DiseaseLog = (pet) => {
                     `/disease/update/pet/${currentDisease.diseaseLogId}`,
                     formData
                 );
+                toast.success("Cập nhật bệnh thành công!");
             } else if (selectDisease === "add") {
                 await ApiInstance.post(`/disease/add/pet/${pet?.pet?.petID}`, formData);
+                toast.success("Thêm bệnh thành công!");
             }
             setOpen(false);
             getDataListDisease();
         } catch (error) {
             console.error("Lỗi khi lưu bệnh:", error);
             console.error("Lỗi khi lưu bệnh:", formData);
+            toast.error("Lưu bệnh thất bại!");
+            setOpen(false);
         }
     };
 

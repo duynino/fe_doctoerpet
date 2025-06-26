@@ -19,6 +19,7 @@ import {
     Tooltip,
     Divider,
     ListItemIcon,
+    Stack,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -29,6 +30,7 @@ import Logout from "@mui/icons-material/Logout";
 import Settings from "@mui/icons-material/Settings";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import logo from "../assets/LogoDr.Pet.jpg"; // Adjust the path as necessary
 
 const Search = styled("div")(({ theme }) => ({
     position: "relative",
@@ -60,12 +62,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const navItems = [
-    { label: "Trang chủ", path: "/" },
-    { label: "Đồ ăn", path: "/productSearch" },
-    { label: "Phụ Kiện", path: "/cats" },
-    { label: "Đặt Lịch Khám", path: "/deals" },
+    { label: "Trang Chủ", path: "/" },
+    { label: "Sản phẩm ", path: "/productSearch" },
+    { label: "Đặt Lịch Khám", path: "/" },
     { label: "Quản Lý Hồ sơ", path: "/petProfile" },
-    { label: "Về chúng tôi", path: "/outlet" },
+    { label: "Về Chúng Tôi", path: "/" },
 ];
 
 const HeaderPage = () => {
@@ -95,8 +96,11 @@ const HeaderPage = () => {
 
         // 4. Hiển thị thông báo thành công
         toast.success("Đăng xuất thành công!");
+        // 5. Cập nhật trạng thái người dùng
         setAnchorEl(null);
         setUser(null); // Cập nhật trạng thái người dùng
+        // 6. rest trang website
+        window.location.reload();
     };
 
     const toggleDrawer = (open) => () => {
@@ -112,6 +116,21 @@ const HeaderPage = () => {
             setUser(null);
         }
     }, []);
+
+    const handleNavigation = (path) => {
+        console.log("Navigating to:", path);
+        const accountStr = localStorage.getItem("account");
+        if (path === "/petProfile") {
+            if (!accountStr) {
+                navigate("/login");
+            } else {
+                navigate(path);
+            }
+        } else {
+            navigate(path);
+        }
+        setDrawerOpen(false); // Đóng drawer sau khi điều hướng
+    };
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -139,14 +158,23 @@ const HeaderPage = () => {
                         </IconButton>
                     )}
 
-                    <Typography
-                        variant="h5"
+                    <Stack
+                        direction="row"
                         component="a"
                         href="/"
-                        sx={{ textDecoration: "none", color: "white", fontWeight: "bold" }}
+                        spacing={1}
+                        alignItems="center"
+                        sx={{ textDecoration: "none", color: "white" }}
                     >
-                        Doctor Pet
-                    </Typography>
+                        <img
+                            src={logo}
+                            alt="Doctor Pet Logo"
+                            style={{ width: 60, height: 60 }}
+                        />
+                        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                            Dr Pet
+                        </Typography>
+                    </Stack>
 
                     {!isMobile && (
                         <Search sx={{ flexGrow: 1, maxWidth: 400 }}>
@@ -231,23 +259,25 @@ const HeaderPage = () => {
                                     anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                                 >
                                     <MenuItem onClick={handleClose}>
-                                        <Avatar /> Profile
+                                        <Avatar /> Hồ sơ cá nhân
                                     </MenuItem>
                                     <MenuItem onClick={handleClose}>
-                                        <Avatar /> My account
+                                        <Avatar /> Lịch sử đặt hàng
                                     </MenuItem>
+                                    {user && user.role === "admin" && (
+                                        <MenuItem onClick={handleClose}>
+                                            <ListItemIcon>
+                                                <Settings fontSize="small" />
+                                            </ListItemIcon>
+                                            Quản lý tài khoản
+                                        </MenuItem>
+                                    )}
                                     <Divider />
-                                    <MenuItem onClick={handleClose}>
-                                        <ListItemIcon>
-                                            <Settings fontSize="small" />
-                                        </ListItemIcon>
-                                        Settings
-                                    </MenuItem>
                                     <MenuItem onClick={handleLogout}>
                                         <ListItemIcon>
                                             <Logout fontSize="small" />
                                         </ListItemIcon>
-                                        Logout
+                                        Đăng xuất
                                     </MenuItem>
                                 </Menu>
                                 <IconButton color="inherit">
@@ -278,7 +308,11 @@ const HeaderPage = () => {
             {!isMobile && (
                 <Box sx={{ display: "flex", justifyContent: "center", gap: 4, py: 1 }}>
                     {navItems.map((item) => (
-                        <Button key={item.label} href={item.path} sx={{ color: "black" }}>
+                        <Button
+                            key={item.label}
+                            onClick={() => handleNavigation(item.path)}
+                            sx={{ color: "black" }}
+                        >
                             {item.label}
                         </Button>
                     ))}
@@ -289,7 +323,11 @@ const HeaderPage = () => {
                 <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
                     <List>
                         {navItems.map((item) => (
-                            <ListItem button key={item.label} component="a" href={item.path}>
+                            <ListItem
+                                key={item.label}
+                                onClick={() => handleNavigation(item.path)}
+                                sx={{ cursor: "pointer" }}
+                            >
                                 <ListItemText primary={item.label} />
                             </ListItem>
                         ))}
