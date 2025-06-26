@@ -6,6 +6,7 @@ import HeaderPage from "../../components/header";
 import FooterPage from "../../components/footer";
 import { useNavigate } from "react-router-dom";
 import ApiInstance from "../../axios/index";
+import axios from "axios";
 
 const ResetPasswordPage = () => {
     const [newPassword, setNewPassword] = useState("");
@@ -32,12 +33,12 @@ const ResetPasswordPage = () => {
         }
 
         try {
-            // await axios.put(`http://localhost:8080/auth/resetPassword?token=${token}`, {
-            //     newPassword,
-            // });
-            await ApiInstance.put(`/auth/resetPassword?token=${token}`, {
+            await axios.put(`${import.meta.env.VITE_BACKEND_URL}/auth/resetPassword?token=${token}`, {
                 newPassword,
             });
+            // await ApiInstance.put(`/auth/resetPassword?token=${token}`, {
+            //     newPassword,
+            // });
             setSuccess(true);
             toast.success("Đổi mật khẩu thành công!");
             setTimeout(() => {

@@ -27,7 +27,6 @@ import { formatDateDay } from "../../components/convertDate/convertDate";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const DiseaseLog = (pet) => {
     const [Diseases, setDiseases] = useState([]);
     const [selectDisease, setSelectDisease] = useState("");
@@ -60,8 +59,17 @@ const DiseaseLog = (pet) => {
 
     const getDataListDisease = async () => {
         try {
+            if (!pet?.pet?.petID) {
+                console.error("petID không hợp lệ:", pet);
+                setDiseases([]);
+                return;
+            }
             const response = await ApiInstance.get(`/disease/all/pet/${pet?.pet?.petID}`);
-            setDiseases(response.data);
+            const data = response.data;
+            const diseaseList = Array.isArray(data) ? data : data?.data ?? [];
+
+            console.log("Fetched disease list:", diseaseList);
+            setDiseases(diseaseList);
             console.log("Danh sách bệnh:", typeof Diseases);
             console.error("Lỗi khi lấy thông pet:", pet?.pet?.petID);
         } catch (error) {
@@ -241,7 +249,7 @@ const DiseaseLog = (pet) => {
                                     <TableCell>Tên bệnh</TableCell>
                                     <TableCell>Ngày bắt đầu</TableCell>
                                     <TableCell>Ngày kết thúc</TableCell>
-                                    <TableCell >Hành động</TableCell>
+                                    <TableCell>Hành động</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
