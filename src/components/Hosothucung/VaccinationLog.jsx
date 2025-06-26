@@ -25,6 +25,8 @@ import { useState } from "react";
 import { formatDateDay } from "../../components/convertDate/convertDate";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import ApiInstance from "../../axios/index";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const VaccinationLog = (pet) => {
     const [vaccinationLog, setVaccinationLog] = useState([]);
@@ -137,20 +139,25 @@ const VaccinationLog = (pet) => {
             ApiInstance.post(`/vac/add/pet/${pet?.pet?.petID}`, formData)
                 .then((response) => {
                     console.log("Thêm vắc xin thành công:", response.data);
+                    toast.success("Thêm vắc xin thành công!");
                     getVaccinationLog(); // Refresh the vaccination log
                 })
                 .catch((error) => {
                     console.error("Lỗi khi thêm vắc xin:", error);
+                    toast.error("Lỗi khi thêm vắc xin!");
                 });
+
         } else if (selectVaccine === "edit") {
             // Call API to update existing vaccine
             ApiInstance.put(`/vac/update/${currentVaccine.vacLogId}`, formData)
                 .then((response) => {
                     console.log("Cập nhật vắc xin thành công:", response.data);
+                    toast.success("Cập nhật vắc xin thành công!");
                     getVaccinationLog(); // Refresh the vaccination log
                 })
                 .catch((error) => {
                     console.error("Lỗi khi cập nhật vắc xin:", error);
+                    toast.error("Lỗi khi cập nhật vắc xin!");
                 });
         }
         handleClose();
@@ -162,9 +169,11 @@ const VaccinationLog = (pet) => {
             .then((response) => {
                 console.log("Xóa vắc xin thành công:", response.data);
                 getVaccinationLog(); // Refresh the vaccination log
+                toast.success("Xóa vắc xin thành công!");
             })
             .catch((error) => {
                 console.error("Lỗi khi xóa vắc xin:", error);
+                toast.error("Lỗi khi xóa vắc xin!");
             });
         handleClose();
     };

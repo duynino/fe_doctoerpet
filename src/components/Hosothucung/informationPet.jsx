@@ -20,10 +20,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ApiInstance from "../../axios/index";
 import SaveIcon from "@mui/icons-material/Save";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const InformationPet = (pet) => {
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: pet?.pet?.name || "",
         description: pet?.pet?.description || "",
@@ -96,12 +100,10 @@ const InformationPet = (pet) => {
             const response = await ApiInstance.put(`/pet/update/${pet?.pet?.petID}`, formData);
             setOpenEdit(false);
             console.log("Cập nhật thành công1:", response.data);
+            toast.success("Cập nhật thông tin thú cưng thành công!");
         } catch (error) {
-            console.error("Lỗi khi cập nhật thú cưng2:", formData);
-            console.error("Lỗi khi cập nhật thú cưng:", error.data);
-            //lấy token
-            const token = localStorage.getItem("token");
-            console.error("Lỗi khi cập nhật thú cưng2:", token);
+            console.error("Lỗi khi cập nhật thú cưng:", error);
+            toast.error("Lỗi khi cập nhật thông tin thú cưng!");
         }
     };
 
@@ -110,8 +112,12 @@ const InformationPet = (pet) => {
             await ApiInstance.put(`/pet/delete/${pet?.pet?.petID}`);
             setOpenDelete(false);
             console.log("Xóa hồ sơ thú cưng thành công");
+            toast.success("Xóa hồ sơ thú cưng thành công!");
+            navigate(0);
         } catch (error) {
             console.error("Lỗi khi xóa hồ sơ thú cưng:", error);
+            toast.error("Lỗi khi xóa hồ sơ thú cưng!");
+            setOpenDelete(false);
         }
     };
 

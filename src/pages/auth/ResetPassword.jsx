@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Container, Box, Typography, TextField, Button, Paper, Alert } from "@mui/material";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HeaderPage from "../../components/header";
 import FooterPage from "../../components/footer";
 import { useNavigate } from "react-router-dom";
+import ApiInstance from "../../axios/index";
 
 const ResetPasswordPage = () => {
     const [newPassword, setNewPassword] = useState("");
@@ -32,10 +32,12 @@ const ResetPasswordPage = () => {
         }
 
         try {
-            await axios.put(`http://localhost:8080/auth/resetPassword?token=${token}`, {
+            // await axios.put(`http://localhost:8080/auth/resetPassword?token=${token}`, {
+            //     newPassword,
+            // });
+            await ApiInstance.put(`/auth/resetPassword?token=${token}`, {
                 newPassword,
             });
-
             setSuccess(true);
             toast.success("Đổi mật khẩu thành công!");
             setTimeout(() => {

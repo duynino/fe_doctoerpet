@@ -1,35 +1,42 @@
 // src/components/CategorySlider.tsx
 import { Box, Grid, Typography, Link } from "@mui/material";
+import sislider_home1 from "../assets/imageShop/img_slider_home_circle_1.png";
+import sislider_home2 from "../assets/imageShop/img_slider_home_circle_2.png";  
+import sislider_home3 from "../assets/imageShop/img_slider_home_circle_3.png";
+import sislider_home4 from "../assets/imageShop/img_slider_home_circle_4.png";
+import sislider_home5 from "../assets/imageShop/img_slider_home_circle_5.png";
+import sislider_home6 from "../assets/imageShop/img_slider_home_circle_6.png";
+
 
 const categories = [
     {
         href: "/dogs",
-        img: "/src/assets/imageShop/img_slider_home_circle_1.png",
+        img: { src: sislider_home1, alt: "Dành cho chó" },
         label: "Dành cho chó",
     },
     {
         href: "/cats",
-        img: "/src/assets/imageShop/img_slider_home_circle_2.png",
+        img: { src: sislider_home2, alt: "Dành cho mèo" },
         label: "Dành cho mèo",
     },
     {
         href: "#",
-        img: "/src/assets/imageShop/img_slider_home_circle_3.png",
+        img: { src: sislider_home3, alt: "Dành cho thú cưng khác" },
         label: "Chất dinh dưỡng",
     },
     {
         href: "#",
-        img: "/src/assets/imageShop/img_slider_home_circle_4.png",
+        img: { src: sislider_home4, alt: "Chất dinh dưỡng" },
         label: "Hương vị tự nhiên",
     },
     {
         href: "#",
-        img: "/src/assets/imageShop/img_slider_home_circle_5.png",
+        img: { src: sislider_home5, alt: "Ưu đãi đặc biệt" },
         label: "Ưu đãi đặc biệt",
     },
     {
         href: "#",
-        img: "/src/assets/imageShop/img_slider_home_circle_6.png",
+        img: { src: sislider_home6, alt: "Ưu đãi đặc biệt" },
         label: "Sổ Tay thú cưng",
     },
 ];
@@ -66,7 +73,7 @@ const CategorySlider = () => {
                     >
                         <Box
                             component="img"
-                            src={item.img}
+                            src={item.img.src}
                             alt={item.label}
                             sx={{
                                 width: "100%",

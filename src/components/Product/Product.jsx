@@ -12,58 +12,75 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { useNavigate } from "react-router-dom";
+import imageProduct from "../../assets/imageProduct/food/Catrang.webp"; // Adjust the path as necessary
+
+const product = {
+    productid: 1,
+    name: "Fall Limited Edition Sneakers",
+    price: 115000,
+    quantity: 3,
+    category: "Sneakers",
+    supplier: "Sneaker Company",
+    description:
+        "These low-profile sneakers are your perfect casual wear companion. Featuring a durable rubber outer sole, they'll withstand everything the weather can offer.",
+    imageurl: imageProduct, // Ensure this path is correct
+};
 
 const Product = () => {
-    const [quantity, setQuantity] = React.useState(0);
+    const [quantity, setQuantity] = React.useState(1);
     const handleIncrease = () => setQuantity(quantity + 1);
     const handleDecrease = () => {
-        if (quantity > 0) setQuantity(quantity - 1);
+        if (quantity > 1) setQuantity(quantity - 1);
     };
+    const navigate = useNavigate();
+
+    const handleOrder = () => {
+        navigate('/giohang')
+    }
 
     return (
         <Container>
             <Card>
                 <Grid container spacing={2}>
-                    <Grid size={6} item xs={12} sm={4} md={6}>
+                    <Grid item xs={12} sm={4} md={6} size={6}>
                         <Box
                             sx={{
-                                width: "90%",
-                                aspectRatio: "4/3", // hoặc "16/9", "1/1", v.v.
+                                width: "100%",
                                 overflow: "hidden",
-                                paddingLeft: "2%",
+                                padding: 2,
                             }}
                         >
                             <CardMedia
                                 component="img"
-                                image={"/src/assets/imageShop/img_slider_home_circle_1.png"}
-                                alt="Sneaker"
+                                image={product.imageurl}
+                                alt={product.name}
                                 sx={{
-                                    width: "100%",
-                                    height: "100%",
+                                    width: "80%",
+                                    height: "auto",
                                     objectFit: "cover",
                                 }}
                             />
                         </Box>
                     </Grid>
 
-                    <Grid size={6} item xs={2} sm={2} md={6}>
-                        <CardContent>
-                            <Typography variant="h5" component="div" fontWeight={600}>
-                                Fall Limited Edition Sneakers
+                    <Grid item xs={12} sm={8} md={6} size={6}>
+                        <CardContent sx={{ marginTop: 8 }}>
+                            <Typography variant="h5" fontWeight={600}>
+                                {product.name}
                             </Typography>
                             <Typography variant="subtitle1" color="text.secondary">
-                                Sneaker Company
+                                {product.supplier}
                             </Typography>
-                            <Typography variant="body2" sx={{ marginY: 2 }}>
-                                These low-profile sneakers are your perfect casual wear companion.
-                                Featuring a durable rubber outer sole, they'll withstand everything
-                                the weather can offer.
+                            <Typography variant="body2" sx={{ my: 2 }}>
+                                {product.description}
                             </Typography>
+
                             <Typography variant="h5" color="primary">
-                                $125.00{" "}
-                                <span style={{ color: "grey", textDecoration: "line-through" }}>
-                                    $250.00
-                                </span>
+                                {product.price.toLocaleString("vi-VN")} ₫{" "}
+                                {/* <span style={{ color: "grey", textDecoration: "line-through" }}>
+                  {product.price.toLocaleString("vi-VN")} ₫
+                </span> */}
                                 <span
                                     style={{
                                         backgroundColor: "#FFB74D",
@@ -76,7 +93,7 @@ const Product = () => {
                                 </span>
                             </Typography>
 
-                            <Box display="flex" alignItems="center" marginY={2}>
+                            <Box display="flex" alignItems="center" my={2}>
                                 <IconButton onClick={handleDecrease}>
                                     <RemoveIcon />
                                 </IconButton>
@@ -85,9 +102,28 @@ const Product = () => {
                                     <AddIcon />
                                 </IconButton>
                             </Box>
-                            <Button variant="contained" color="primary" fullWidth>
-                                Add To Cart
-                            </Button>
+                            <Grid container spacing={2} mt={2}>
+                                <Grid item xs={12} sm={6} md={6} size={6}>
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        fullWidth
+                                        onClick={() => alert(`Added ${quantity} items to cart`)}
+                                    >
+                                        Thêm vào giỏ hàng
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={12} sm={6} md={6} size={6}>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        fullWidth
+                                        onClick={handleOrder}
+                                    >
+                                        Mua ngay
+                                    </Button>
+                                </Grid>
+                            </Grid>
                         </CardContent>
                     </Grid>
                 </Grid>
