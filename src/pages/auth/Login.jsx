@@ -18,14 +18,52 @@ const Login = () => {
         e.preventDefault(); // Ngăn reload trang khi submit form
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, { username, password });
-            // const response = await ApiInstance.post("/auth/login", { username, password });
+            // 1. Đăng nhập
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, {
+                username,
+                password,
+            });
+
             const { token, accountResponse } = response.data;
+
+            // 2. Lưu token và account
             localStorage.setItem("token", token);
             localStorage.setItem("account", JSON.stringify(accountResponse));
             toast.success("Đăng nhập thành công!");
-            // Có thể chuyển hướng sau khi đăng nhập thành công:
-            // ví dụ: window.location.href = "/dashboard";
+
+            // 3. Lấy danh sách sự kiện
+            const scheduleResponse = await ApiInstance.get("/schedule/");
+            const fetchedEvents = Array.isArray(scheduleResponse?.data)
+                ? scheduleResponse.data?.map((event) => ({
+                      ...event,
+                      start: new Date(event.start),
+                      end: new Date(event.end),
+                  }))
+                : []; // Nếu dữ liệu không phải là mảng, trả về mảng rỗng
+
+            // 4. Lọc sự kiện trong 3 ngày tới
+            const today = new Date();
+            const threeDaysLater = new Date();
+            threeDaysLater.setDate(today.getDate() + 3);
+
+            const upcomingEvents = fetchedEvents?.filter((event) => {
+                const eventStart = new Date(event.start);
+                return eventStart >= today && eventStart <= threeDaysLater;
+            });
+
+            // 5. Hiển thị toast nếu có sự kiện sắp diễn ra
+            if (upcomingEvents.length > 0) {
+                upcomingEvents.forEach((event) => {
+                    const startTime = new Date(event.start);
+                    toast.info(
+                        `Nhắc nhở: ${
+                            event.title
+                        } vào lúc ${startTime.toLocaleTimeString()} ngày ${startTime.toLocaleDateString()}`
+                    );
+                });
+            }
+
+            // 6. Điều hướng sau khi login
             navigate("/");
         } catch (err) {
             setError("Đăng nhập thất bại. Vui lòng kiểm tra lại tên đăng nhập hoặc mật khẩu.");
@@ -90,7 +128,7 @@ const Login = () => {
                             Đăng nhập
                         </Button>
                     </form>
-                    
+
                     <Box
                         sx={{
                             display: "flex",

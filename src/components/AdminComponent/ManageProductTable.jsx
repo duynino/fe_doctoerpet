@@ -15,14 +15,13 @@ import {
     TableHead,
     TableRow,
     TextField,
-    Switch,
     Grid,
     FormLabel,
     OutlinedInput,
     FormControl,
-    RadioGroup,
-    FormControlLabel,
-    Radio,
+    InputLabel,
+    Select,
+    MenuItem,
 } from "@mui/material";
 import TablePagination from "@mui/material/TablePagination";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -30,8 +29,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { Category, Description } from "@mui/icons-material";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ApiInstance from "../../axios/index";
+import axios from "axios";
 
-import demoProductImage from "../../assets/imageProduct/food/hat-Ganador-2.jpg"; // Adjust the path as necessary
+// import demoProductImage from "../../assets/imageProduct/food/hat-Ganador-2.jpg";
 
 const ManageProductTable = () => {
     const [products, setProducts] = useState([]);
@@ -43,17 +46,17 @@ const ManageProductTable = () => {
     const [selectedDialog, setSelectedDialog] = useState("");
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
 
     const [formData, setFormData] = useState({
-        id: "",
         name: "",
-        category: "",
-        supplier: "",
+        categoryId: "",
+        supplierId: "",
         quantity: "",
         price: "",
-        image_url: "",
+        imageURL: "",
         description: "",
-        is_active: "",
     });
 
     const handleChangePage = (event, newPage) => {
@@ -64,50 +67,59 @@ const ManageProductTable = () => {
         setPage(0);
     };
 
+    // get data from API or mock data
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/product/`);
+            if (response.status === 200) {
+                setProducts(response.data);
+            } else {
+                toast.error("Failed to fetch products");
+            }
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            toast.error("Failed to fetch products");
+        }
+    };
+
+    // Fetch categories and suppliers
+    const fetchCategories = async () => {
+        try {
+            const response = await ApiInstance.get("/category/");
+            if (response.status === 200) {
+                setCategories(response.data);
+            } else {
+                toast.error("Failed to fetch categories");
+            }
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+            toast.error("Failed to fetch categories");
+        }
+    };
+
+    const fetchSuppliers = async () => {
+        try {
+            const response = await ApiInstance.get("/supplier/");
+            if (response.status === 200) {
+                setSuppliers(response.data);
+            } else {
+                toast.error("Failed to fetch suppliers");
+            }
+        } catch (error) {
+            console.error("Error fetching suppliers:", error);
+            toast.error("Failed to fetch suppliers");
+        }
+    };
+
     useEffect(() => {
-        // Chỉ gọi 1 lần khi component được mount
-        setProducts([
-            {
-                id: "1",
-                name: "Royal Canin Dog Food",
-                category: "Food",
-                supplier: "PetCare Co.",
-                quantity: "50",
-                price: "450000",
-                image_url: demoProductImage,
-                description:
-                    "Premium dry food for adult dogs. Supports healthy digestion and coat.",
-                is_active: "true",
-            },
-            {
-                id: "2",
-                name: "Cat Tower Deluxe",
-                category: "Accessories",
-                supplier: "MeowMart",
-                quantity: "15",
-                price: "1200000",
-                image_url:
-                    "https://tiki.vn/blog/wp-content/uploads/2023/01/Y7deW5ZtpOonbiD_XawHLHdkjKYKHvWxvxNZzKdXXn0L8InieLIH_-U5m0u-RUlFtXKp0Ty91Itj4Oxwn_tjKg_UZo3lxFSrOH_DHIbpKP1LDn80z6BbOxj4d8bmymdy8PWFGjLkTpCdoz-3X-KY7IedQ_dxWJlHSIBWwCYhgM02FvUfVUgLKOQxrQWgjw.jpg",
-                description: "Multi-level cat tower with scratching posts and cozy perches.",
-                is_active: "true",
-            },
-            {
-                id: "3",
-                name: "Fish Tank Filter 20L",
-                category: "Aquarium",
-                supplier: "AquaWorld",
-                quantity: "30",
-                price: "300000",
-                image_url: "https://example.com/fishtankfilter.jpg",
-                description: "Efficient filter suitable for fish tanks up to 20 liters.",
-                is_active: "false",
-            },
-        ]);
-    }, []);
+        fetchProducts();
+        fetchCategories();
+        fetchSuppliers();
+    }, []); // Fetch products when component mounts
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     // handle add user
@@ -115,7 +127,6 @@ const ManageProductTable = () => {
         setSelectedDialog("add");
         setOpenDialog(true);
         setFormData({
-            id: "",
             name: "",
             category: "",
             supplier: "",
@@ -133,34 +144,35 @@ const ManageProductTable = () => {
         setSelectedDialog("edit");
         setOpenDialog(true);
         setFormData({
-            id: product.id,
             name: product.name,
-            category: product.category,
-            supplier: product.supplier,
+            categoryId: product.category.categoryID,
+            supplierId: 1,
             quantity: product.quantity,
             price: product.price,
-            image_url: product.image_url,
+            imageURL: product.imageURL,
             description: product.description,
-            is_active: product.is_active,
+            is_active: true,
         });
+        setSelectedProduct(product);
         setOpenEdit(true);
     };
 
     // handle view user
     const handleViewProduct = (product) => {
+        console.log("Viewing product:", product);
         setSelectedDialog("view");
         setOpenDialog(true);
         setFormData({
-            id: product.id,
             name: product.name,
-            category: product.category,
-            supplier: product.supplier,
+            categoryId: product.category.categoryID,
+            supplierId: 1,
             quantity: product.quantity,
             price: product.price,
-            image_url: product.image_url,
+            imageURL: product.imageURL,
             description: product.description,
-            is_active: product.is_active,
+            is_active: true,
         });
+        setSelectedProduct(product);
         setOpenEdit(false);
     };
 
@@ -178,18 +190,68 @@ const ManageProductTable = () => {
         setSelectedDialog("delete");
     };
 
-    const handleToggleActive = (product) => {
-        const updatedProduct = products.map((u) =>
-            u.id === product.id ? { ...u, active: !u.active } : u
-        );
-        setProducts(updatedProduct);
-    };
-
     const formLabelStyle = {
         fontWeight: 600,
         color: "#374151", // neutral gray
         marginBottom: "0.5rem",
         display: "block",
+    };
+
+    // handle delete product
+    const handleDeleteProduct = async () => {
+        if (selectedProduct) {
+            try {
+                const response = await ApiInstance.post(
+                    `/product/delete/${selectedProduct.productID}`
+                );
+                if (response.status === 200) {
+                    setProducts(products.filter((p) => p.productID !== selectedProduct.productID));
+                    toast.success("Product deleted successfully");
+                } else {
+                    toast.error("Failed to delete product");
+                }
+            } catch (error) {
+                console.error("Error deleting product:", error);
+                toast.error("Failed to delete product");
+            }
+        }
+        handleCloseDialog();
+    };
+
+    // handle save product
+    const handleSaveProduct = async () => {
+        try {
+            console.log("Saving product with formData:", formData);
+            if (selectedDialog === "add") {
+                const response = await ApiInstance.post("/product/add", formData);
+                if (response.status === 200) {
+                    setProducts([...products, response.data]);
+                    toast.success("Product added successfully");
+                } else {
+                    toast.error("Failed to add product");
+                }
+            } else if (selectedDialog === "edit") {
+                const response = await ApiInstance.put(
+                    `/product/update/${selectedProduct.productID}`,
+                    formData
+                );
+                if (response.status === 200) {
+                    setProducts(
+                        products.map((p) =>
+                            p.productID === selectedProduct.productID ? response.data : p
+                        )
+                    );
+                    await fetchProducts(); // Refresh products
+                    toast.success("Product updated successfully");
+                } else {
+                    toast.error("Failed to update product");
+                }
+            }
+        } catch (error) {
+            console.error("Error saving product:", error);
+            toast.error("Failed to save product");
+        }
+        handleCloseDialog();
     };
 
     return (
@@ -257,16 +319,16 @@ const ManageProductTable = () => {
                         </TableHead>
                         <TableBody>
                             {products
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .filter((product) =>
-                                    product.name.toLowerCase().includes(searchTerm)
+                                ?.filter((product) =>
+                                    product?.name?.toLowerCase().includes(searchTerm)
                                 )
-                                .map((product) => (
-                                    <TableRow key={product.id}>
-                                        <TableCell>{product.id}</TableCell>
+                                ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                ?.map((product, index) => (
+                                    <TableRow key={product.productID}>
+                                        <TableCell>{index + 1}</TableCell>
                                         <TableCell>
                                             <img
-                                                src={product.image_url}
+                                                src={product.imageURL}
                                                 alt={product.name}
                                                 style={{
                                                     width: "50px",
@@ -278,12 +340,6 @@ const ManageProductTable = () => {
                                         <TableCell>{product.name}</TableCell>
                                         <TableCell>{product.price}</TableCell>
                                         <TableCell>{product.quantity}</TableCell>
-                                        <TableCell>
-                                            <Switch
-                                                checked={product.is_active}
-                                                onChange={() => handleToggleActive(product)}
-                                            />
-                                        </TableCell>
                                         <TableCell>
                                             <Button
                                                 sx={{
@@ -321,7 +377,7 @@ const ManageProductTable = () => {
                 <Box>
                     <TablePagination
                         component="div"
-                        count={100}
+                        count={20}
                         page={page}
                         onPageChange={handleChangePage}
                         rowsPerPage={rowsPerPage}
@@ -341,7 +397,7 @@ const ManageProductTable = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog}>Cancel</Button>
-                    <Button color="error" onClick={handleCloseDialog}>
+                    <Button color="error" onClick={handleDeleteProduct}>
                         Confirm
                     </Button>
                 </DialogActions>
@@ -358,7 +414,7 @@ const ManageProductTable = () => {
                         <Grid size={5} item xs={12} sm={4} md={6}>
                             <Box
                                 component="img"
-                                src={formData.image_url || ""}
+                                src={formData.imageURL || ""}
                                 alt="Product"
                                 sx={{
                                     width: "80%",
@@ -379,7 +435,7 @@ const ManageProductTable = () => {
                                         name="image"
                                         type="text"
                                         placeholder="Enter product image URL"
-                                        value={formData.image_url}
+                                        value={formData.imageURL}
                                         onChange={handleChange}
                                         autoComplete="off"
                                         required
@@ -458,39 +514,63 @@ const ManageProductTable = () => {
                                 </Grid>
 
                                 <Grid item xs={12} size={6}>
-                                    <FormLabel htmlFor="species" style={formLabelStyle}>
-                                        Nhà cung cấp
-                                    </FormLabel>
-                                    <OutlinedInput
-                                        id="species"
-                                        name="species"
-                                        type="text"
-                                        placeholder="Nhập nhà cung cấp sản phẩm"
-                                        value={formData.supplier}
-                                        onChange={handleChange}
-                                        autoComplete="off"
-                                        size="small"
-                                        fullWidth
-                                        disabled={!openEdit}
-                                    />
+                                    <FormControl sx={{ minWidth: 200 }} size="small">
+                                        <InputLabel id="select-supplier-label">
+                                            Nhà cung cấp
+                                        </InputLabel>
+                                        <Select
+                                            labelId="select-supplier-label"
+                                            id="supplier-select"
+                                            name="supplierId"
+                                            value={formData.supplierId}
+                                            label="Nhà cung cấp"
+                                            onChange={handleChange}
+                                            disabled={!openEdit} // ✅
+                                        >
+                                            {Array.isArray(suppliers) && suppliers.length > 0 ? (
+                                                suppliers.map((supplier) => (
+                                                    <MenuItem
+                                                        key={supplier.supplierID}
+                                                        value={supplier.supplierID}
+                                                    >
+                                                        {supplier.name}
+                                                    </MenuItem>
+                                                ))
+                                            ) : (
+                                                <MenuItem disabled>Không có nhà cung cấp</MenuItem>
+                                            )}
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
 
                                 <Grid item xs={12} size={6}>
-                                    <FormLabel htmlFor="breed" style={formLabelStyle}>
-                                        Loại sản phẩm
-                                    </FormLabel>
-                                    <OutlinedInput
-                                        id="breed"
-                                        name="breed"
-                                        type="text"
-                                        placeholder="Nhập loại sản phẩm"
-                                        value={formData.category}
-                                        onChange={handleChange}
-                                        autoComplete="off"
-                                        size="small"
-                                        fullWidth
-                                        disabled={!openEdit}
-                                    />
+                                    <FormControl sx={{ minWidth: 200 }} size="small">
+                                        <InputLabel id="select-category-label">
+                                            Loại sản phẩm
+                                        </InputLabel>
+                                        <Select
+                                            labelId="select-category-label"
+                                            id="category-select"
+                                            name="categoryId"
+                                            value={formData.categoryId}
+                                            label="Loại sản phẩm"
+                                            onChange={handleChange}
+                                            disabled={!openEdit} 
+                                        >
+                                            {Array.isArray(categories) && categories.length > 0 ? (
+                                                categories.map((category) => (
+                                                    <MenuItem
+                                                        key={category.categoryID}
+                                                        value={category.categoryID}
+                                                    >
+                                                        {category.name}
+                                                    </MenuItem>
+                                                ))
+                                            ) : (
+                                                <MenuItem disabled>Không có danh mục</MenuItem>
+                                            )}
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
                                 <Grid item xs={12} size={8}>
                                     <FormLabel htmlFor="description" style={formLabelStyle}>
@@ -519,8 +599,16 @@ const ManageProductTable = () => {
                     <Button onClick={() => setOpenDialog(false)} color="primary">
                         {selectedDialog === "view" ? "Đóng" : "Hủy"}
                     </Button>
-                    {selectedDialog === "edit" && <Button color="primary">Lưu</Button>}
-                    {selectedDialog === "add" && <Button color="primary">Thêm sản phẩm</Button>}
+                    {selectedDialog === "edit" && (
+                        <Button onClick={handleSaveProduct} color="primary">
+                            Lưu
+                        </Button>
+                    )}
+                    {selectedDialog === "add" && (
+                        <Button onClick={handleSaveProduct} color="primary">
+                            Thêm sản phẩm
+                        </Button>
+                    )}
                 </DialogActions>
             </Dialog>
         </>

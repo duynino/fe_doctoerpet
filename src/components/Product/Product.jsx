@@ -10,51 +10,46 @@ import {
     CardContent,
     Container,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import { useNavigate } from "react-router-dom";
-import imageProduct from "../../assets/imageProduct/food/Catrang.webp"; // Adjust the path as necessary
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
-const product = {
-    productid: 1,
-    name: "Fall Limited Edition Sneakers",
-    price: 115000,
-    quantity: 3,
-    category: "Sneakers",
-    supplier: "Sneaker Company",
-    description:
-        "These low-profile sneakers are your perfect casual wear companion. Featuring a durable rubber outer sole, they'll withstand everything the weather can offer.",
-    imageurl: imageProduct, // Ensure this path is correct
-};
 
 const Product = () => {
-    const [quantity, setQuantity] = React.useState(1);
-    const handleIncrease = () => setQuantity(quantity + 1);
-    const handleDecrease = () => {
-        if (quantity > 1) setQuantity(quantity - 1);
-    };
-    const navigate = useNavigate();
-
-    const handleOrder = () => {
-        navigate('/giohang')
+    const { id } = useParams(); 
+    const [product, setProduct] = React.useState(null);
+    const handleLinkPage = () => {
+        window.open('https://www.facebook.com/profile.php?id=61576901769986', '_blank');
     }
+
+    const fetchProduct = async () => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/product/detail/${id}`);
+            setProduct(response.data);
+            console.log("Fetched product:", response.data);
+        }catch (error) {
+            console.error("Error fetching product:", error);
+        }
+    };
+
+    React.useEffect(() => {
+        fetchProduct();
+    }, [id]);
 
     return (
         <Container>
             <Card>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={4} md={6} size={6}>
+                    <Grid item size={{ sm: 6, md: 6 }}>
                         <Box
                             sx={{
                                 width: "100%",
                                 overflow: "hidden",
-                                padding: 2,
                             }}
                         >
                             <CardMedia
                                 component="img"
-                                image={product.imageurl}
-                                alt={product.name}
+                                image={product?.imageURL}
+                                alt={product?.name}
                                 sx={{
                                     width: "80%",
                                     height: "auto",
@@ -64,63 +59,34 @@ const Product = () => {
                         </Box>
                     </Grid>
 
-                    <Grid item xs={12} sm={8} md={6} size={6}>
+                    <Grid item size={{ xs: 12, sm: 8, md: 6 }}>
                         <CardContent sx={{ marginTop: 8 }}>
                             <Typography variant="h5" fontWeight={600}>
-                                {product.name}
+                                {product?.name}
                             </Typography>
                             <Typography variant="subtitle1" color="text.secondary">
-                                {product.supplier}
+                                {product?.category?.name}
                             </Typography>
                             <Typography variant="body2" sx={{ my: 2 }}>
-                                {product.description}
+                                {product?.description}
                             </Typography>
 
                             <Typography variant="h5" color="primary">
-                                {product.price.toLocaleString("vi-VN")} ₫{" "}
-                                {/* <span style={{ color: "grey", textDecoration: "line-through" }}>
-                  {product.price.toLocaleString("vi-VN")} ₫
-                </span> */}
-                                <span
-                                    style={{
-                                        backgroundColor: "#FFB74D",
-                                        padding: "2px 6px",
-                                        borderRadius: 4,
-                                        marginLeft: 4,
-                                    }}
-                                >
-                                    50%
-                                </span>
+                                {product?.price?.toLocaleString("vi-VN")} ₫{" "}
                             </Typography>
 
                             <Box display="flex" alignItems="center" my={2}>
-                                <IconButton onClick={handleDecrease}>
-                                    <RemoveIcon />
-                                </IconButton>
-                                <Typography variant="h6">{quantity}</Typography>
-                                <IconButton onClick={handleIncrease}>
-                                    <AddIcon />
-                                </IconButton>
+                                <Typography variant="h6">{product?.quantity}</Typography>
                             </Box>
                             <Grid container spacing={2} mt={2}>
-                                <Grid item xs={12} sm={6} md={6} size={6}>
+                                <Grid item size={{ xs: 12, sm: 8, md: 6 }}>
                                     <Button
                                         variant="outlined"
                                         color="primary"
                                         fullWidth
-                                        onClick={() => alert(`Added ${quantity} items to cart`)}
+                                        onClick={handleLinkPage}
                                     >
-                                        Thêm vào giỏ hàng
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={12} sm={6} md={6} size={6}>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        fullWidth
-                                        onClick={handleOrder}
-                                    >
-                                        Mua ngay
+                                        Liên hệ với Fanpage
                                     </Button>
                                 </Grid>
                             </Grid>

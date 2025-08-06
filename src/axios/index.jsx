@@ -6,6 +6,7 @@ export const request = async (config) => {
   if (token) {
     // config.headers.setAuthorization(`Bearer ${token}`);
     config.headers["Authorization"] = `Bearer ${token}`;
+    console.log("Token set in request headers:", config.headers["Authorization"]);
     return config;
   }
 

@@ -5,7 +5,6 @@ import {
     IconButton,
     Typography,
     InputBase,
-    Badge,
     Box,
     Button,
     Drawer,
@@ -24,7 +23,6 @@ import {
 import { styled, useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
 import Logout from "@mui/icons-material/Logout";
 import Settings from "@mui/icons-material/Settings";
@@ -64,9 +62,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const navItems = [
     { label: "Trang Chủ", path: "/" },
     { label: "Sản phẩm ", path: "/productSearch" },
-    { label: "Đặt Lịch Khám", path: "/" },
-    { label: "Quản Lý Hồ sơ", path: "/petProfile" },
-    { label: "Về Chúng Tôi", path: "/" },
+    { label: "Quản Lý Lịch", path: "/calendar" },
+    { label: "Quản Lý Hồ Sơ", path: "/petProfile" },
+    { label: "Liên Hệ", path: "/contact" },
 ];
 
 const HeaderPage = () => {
@@ -103,6 +101,21 @@ const HeaderPage = () => {
         window.location.reload();
     };
 
+    const handleManageAccount = () => {
+        // 1. Kiểm tra xem người dùng đã đăng nhập chưa
+        const accountStr = localStorage.getItem("account");
+        if (!accountStr) {
+            // 2. Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
+            navigate("/login");
+            return;
+        }
+        // 3. Nếu đã đăng nhập, chuyển hướng đến trang quản lý tài khoản
+        navigate("/admin/manage-category");
+        // 4. Đóng menu
+        setAnchorEl(null);
+        setDrawerOpen(false); // Đóng drawer nếu đang mở
+    };
+
     const toggleDrawer = (open) => () => {
         setDrawerOpen(open);
     };
@@ -120,7 +133,7 @@ const HeaderPage = () => {
     const handleNavigation = (path) => {
         console.log("Navigating to:", path);
         const accountStr = localStorage.getItem("account");
-        if (path === "/petProfile") {
+        if (path === "/petProfile" || path === "/calendar") {
             if (!accountStr) {
                 navigate("/login");
             } else {
@@ -189,7 +202,15 @@ const HeaderPage = () => {
                     )}
 
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2, color: "white" }}>
-                        {!user && (
+                        {isMobile && !user && (
+                            <>
+                                <Button color="inherit" href="/login">
+                                    Đăng nhập
+                                </Button>
+                            </>
+                        )}
+
+                        {!user && !isMobile && (
                             <>
                                 <Button color="inherit" href="/login">
                                     Đăng nhập
@@ -261,11 +282,8 @@ const HeaderPage = () => {
                                     <MenuItem onClick={handleClose}>
                                         <Avatar /> Hồ sơ cá nhân
                                     </MenuItem>
-                                    <MenuItem onClick={handleClose}>
-                                        <Avatar /> Lịch sử đặt hàng
-                                    </MenuItem>
-                                    {user && user.role === "admin" && (
-                                        <MenuItem onClick={handleClose}>
+                                    {user && user.roleName === "ADMIN" && (
+                                        <MenuItem onClick={handleManageAccount}>
                                             <ListItemIcon>
                                                 <Settings fontSize="small" />
                                             </ListItemIcon>
@@ -280,11 +298,6 @@ const HeaderPage = () => {
                                         Đăng xuất
                                     </MenuItem>
                                 </Menu>
-                                <IconButton color="inherit">
-                                    <Badge badgeContent={4} color="error">
-                                        <ShoppingCartIcon />
-                                    </Badge>
-                                </IconButton>
                             </>
                         )}
                     </Box>

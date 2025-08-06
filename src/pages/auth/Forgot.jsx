@@ -17,6 +17,7 @@ import FooterPage from "../../components/footer";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ApiInstance from "../../axios/index";
+import axios from "axios";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
@@ -26,11 +27,13 @@ const ForgotPassword = () => {
     const handleSubmit = async () => {
         // Giả lập gửi email thành công
         try {
-            // const response = await axios.post("http://localhost:8080/auth/forgotPassword", { email });
-            // console.log("Email sent successfully:", response.data);
-            // setSubmitted(true);
+            const response = await axios.post("http://localhost:8080/auth/forgotPassword", {
+                email,
+            });
+            console.log("Email sent successfully:", response.data);
+            setSubmitted(true);
             // toast.success(response.data);
-            const response = await ApiInstance.post("/auth/forgotPassword", { email });
+            // const response = await ApiInstance.post("/auth/forgotPassword", { email });
             console.log("Email sent successfully:", response.data);
             setSubmitted(true);
             toast.success(response.data);

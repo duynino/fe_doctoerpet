@@ -12,10 +12,11 @@ import ForgotPassword from "./pages/auth/Forgot";
 import ResetPasswordPage from "./pages/auth/ResetPassword";
 import ProfilePet from "./components/Hosothucung/ProfilePet";
 import GioHang from "./pages/GioHang/GioHang";
-import MangerUser from "./pages/Admin/MangerUser";
 import MangerSupplier from "./pages/Admin/ManageSupplier";
 import MangerCategory from "./pages/Admin/MangeCategory";
 import MangerProduct from "./pages/Admin/MangeProduct";
+import ContactForm from "./pages/AboutUS/ContactForm";
+import CalendarPage from "./pages/Calendar/CalendarPage";
 
 function App() {
     return (
@@ -47,14 +48,16 @@ function App() {
                 {/* Đường dẫn cho trang giỏ hàng */}
                 <Route path="/giohang" element={<GioHang />} />
 
-                {/* Các đường dẫn khác có thể thêm vào đây */}
-                <Route path="/admin/manage-manager" element={<MangerUser />} />
-
                 <Route path="/admin/manage-supplier" element={<MangerSupplier />} />
 
                 <Route path="/admin/manage-category" element={<MangerCategory />} />
 
                 <Route path="/admin/manage-product" element={<MangerProduct />} />
+                {/* Thêm các đường dẫn contact form */}
+                <Route path="/contact" element={<ContactForm />} />
+
+                {/* Thêm các đường dẫn khác nếu cần */}
+                <Route path="/calendar" element={<CalendarPage />} />
             </Routes>
 
             <ToastContainer />

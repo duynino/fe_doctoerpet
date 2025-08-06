@@ -37,6 +37,7 @@ const galleryImages = [
 ];
 
 const HomePage = () => {
+    
     return (
         <div>
             <HeaderPage />

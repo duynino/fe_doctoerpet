@@ -26,8 +26,8 @@ import HeaderPage from "../../components/header";
 import FooterPage from "../../components/footer";
 import AddIcon from "@mui/icons-material/Add";
 import ApiInstance from "../../axios/index"; // Adjust the import path as necessary
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -98,7 +98,6 @@ const ProfilePet = () => {
         }));
     };
 
-
     const handleSubmit = async () => {
         try {
             const response = await ApiInstance.post("/pet/addPet", formData);
@@ -111,7 +110,7 @@ const ProfilePet = () => {
             console.error("Error creating pet:", error);
             toast.error("Thêm hồ sơ thú cưng thất bại!");
         }
-    }
+    };
 
     const formLabelStyle = {
         fontWeight: 600,
@@ -145,11 +144,15 @@ const ProfilePet = () => {
                                             label="Thú Cưng"
                                             onChange={handleChange}
                                         >
-                                            {pets.map((pet) => (
-                                                <MenuItem key={pet.id} value={pet.name}>
-                                                    {pet.name}
-                                                </MenuItem>
-                                            ))}
+                                            {Array.isArray(pets) && pets.length > 0 ? (
+                                                pets.map((pet) => (
+                                                    <MenuItem key={pet.id} value={pet.name}>
+                                                        {pet.name}
+                                                    </MenuItem>
+                                                ))
+                                            ) : (
+                                                <MenuItem disabled>Không có thú cưng</MenuItem>
+                                            )}
                                         </Select>
                                     </FormControl>
                                 </Box>

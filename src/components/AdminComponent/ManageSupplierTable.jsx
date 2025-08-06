@@ -15,20 +15,20 @@ import {
     TableHead,
     TableRow,
     TextField,
-    Switch,
     Grid,
     FormLabel,
     OutlinedInput,
-    FormControl,
-    RadioGroup,
-    FormControlLabel,
-    Radio,
+    
 } from "@mui/material";
 import TablePagination from "@mui/material/TablePagination";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ApiInstance from "../../axios/index";
+
 
 const ManageSupplierTable = () => {
     const [suppliers, setSupplier] = useState([]);
@@ -42,13 +42,12 @@ const ManageSupplierTable = () => {
     const [openDelete, setOpenDelete] = useState(false);
 
     const [formData, setFormData] = useState({
-        id: "",
         name: "",
-        phone_number: "",
+        phoneNumber: "",
         email: "",
         address: "",
         description: "",
-        is_active: "",
+        is_active: true,
     });
 
     const handleChangePage = (event, newPage) => {
@@ -59,38 +58,24 @@ const ManageSupplierTable = () => {
         setPage(0);
     };
 
+    // Gọi API để lấy danh sách nhà cung cấp (nếu có)
+    const getListSupplier = async () => {
+        try {
+            const response = await ApiInstance.get("/supplier/");
+            if (response.status === 200) {
+                setSupplier(response.data);
+            } else {
+                toast.error("Không thể lấy danh sách nhà cung cấp");
+            }
+        } catch (error) {
+            console.error("Error fetching suppliers:", error);
+            toast.error("Lỗi khi lấy danh sách nhà cung cấp");
+        }
+    };
+
     useEffect(() => {
-        // Gán danh sách 3 supplier mẫu
-        setSupplier([
-            {
-                id: "SUP001",
-                name: "Công ty TNHH Minh Long",
-                phone_number: "0901234567",
-                email: "minhlong@supplier.vn",
-                address: "123 Nguyễn Văn Cừ, Q.5, TP.HCM",
-                description: "Nhà cung cấp thiết bị điện tử",
-                is_active: true,
-            },
-            {
-                id: "SUP002",
-                name: "CTCP Thực phẩm An Khang",
-                phone_number: "0912345678",
-                email: "ankhang@food.vn",
-                address: "456 Trần Hưng Đạo, Q.1, TP.HCM",
-                description: "Nhà cung cấp thực phẩm sạch",
-                is_active: true,
-            },
-            {
-                id: "SUP003",
-                name: "Văn phòng phẩm Hồng Hà",
-                phone_number: "0938765432",
-                email: "contact@hongha.vn",
-                address: "789 Lý Thường Kiệt, Q.10, TP.HCM",
-                description: "Nhà cung cấp văn phòng phẩm",
-                is_active: false,
-            },
-        ]);
-    }, []);
+        getListSupplier();
+    }, [suppliers]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -102,9 +87,8 @@ const ManageSupplierTable = () => {
         setSelectedDialog("add");
         setOpenDialog(true);
         setFormData({
-            id: "",
             name: "",
-            phone_number: "",
+            phoneNumber: "",
             email: "",
             address: "",
             description: "",
@@ -118,14 +102,14 @@ const ManageSupplierTable = () => {
         setSelectedDialog("edit");
         setOpenDialog(true);
         setFormData({
-            id: supplier.id,
             name: supplier.name,
-            phone_number: supplier.phone_number,
+            phoneNumber: supplier.phoneNumber,
             email: supplier.email,
             address: supplier.address,
             description: supplier.description,
             is_active: supplier.is_active,
         });
+        setSelectedSupplier(supplier);
         setOpenEdit(true);
     };
 
@@ -134,9 +118,8 @@ const ManageSupplierTable = () => {
         setSelectedDialog("view");
         setOpenDialog(true);
         setFormData({
-            id: supplier.id,
             name: supplier.name,
-            phone_number: supplier.phone_number,
+            phoneNumber: supplier.phoneNumber,
             email: supplier.email,
             address: supplier.address,
             description: supplier.description,
@@ -159,19 +142,68 @@ const ManageSupplierTable = () => {
         setSelectedDialog("delete");
     };
 
-    const handleToggleActive = (suppliers) => {
-        const updatedSupplier = suppliers.map((u) =>
-            u.id === u.id ? { ...u, active: !u.active } : u
-        );
-        setSupplier(updatedSupplier);
-    };
-
     const formLabelStyle = {
         fontWeight: 600,
         color: "#374151", // neutral gray
         marginBottom: "0.5rem",
         display: "block",
     };
+    
+    // handle delete supplier
+    const handleDeleteSupplier = async () => {
+        if (!selectedSupplier) return;
+        try {
+            const response = await ApiInstance.delete(`/suppliers/${selectedSupplier.supplierID}`);
+            if (response.status === 200) {
+                setSupplier(suppliers.filter((s) => s.supplierID !== selectedSupplier.supplierID));
+                toast.success("Xóa nhà cung cấp thành công");
+            } else {
+                toast.error("Không thể xóa nhà cung cấp");
+            }
+        } catch (error) {
+            console.error("Error deleting supplier:", error);
+            toast.error("Lỗi khi xóa nhà cung cấp");
+        }
+        handleCloseDialog();
+    };
+
+    // handle SAVE supplier
+    const handleSaveSupplier = async () => {
+        if (selectedDialog === "add") {
+            try {
+                const response = await ApiInstance.post("/supplier/add", formData);
+                if (response.status === 200) {
+                    setSupplier([...suppliers, response.data]);
+                    toast.success("Thêm nhà cung cấp thành công");
+                } else {
+                    toast.error("Không thể thêm nhà cung cấp");
+                }
+            } catch (error) {
+                console.error("Error adding supplier:", error);
+                toast.error("Lỗi khi thêm nhà cung cấp");
+            }
+        } else if (selectedDialog === "edit") {
+            try {
+                console.log("Updating supplier with data:", selectedSupplier.supplierID, formData);
+                const response = await ApiInstance.put(`/supplier/update/${selectedSupplier.supplierID}`, formData);
+                if (response.status === 200) {
+                    setSupplier(
+                        suppliers.map((supplier) =>
+                            supplier.supplierID === selectedSupplier.supplierID ? response.data : supplier
+                        )
+                    );
+                    toast.success("Cập nhật nhà cung cấp thành công");
+                } else {
+                    toast.error("Không thể cập nhật nhà cung cấp");
+                }
+            } catch (error) {
+                console.error("Error updating supplier:", error);
+                toast.error("Lỗi khi cập nhật nhà cung cấp");
+            }
+        }
+        handleCloseDialog();
+    };
+    
 
     return (
         <>
@@ -230,29 +262,22 @@ const ManageSupplierTable = () => {
                                 <TableCell>ID</TableCell>
                                 <TableCell>Name</TableCell>
                                 <TableCell>Email</TableCell>
-                                <TableCell>Active</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {suppliers
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) 
-                                .filter((supplier) =>
-                                    supplier.name.toLowerCase().includes(searchTerm)
+                                ?.filter((supplier) =>
+                                    supplier?.name?.toLowerCase().includes(searchTerm)
                                 )
-                                .map((supplier) => (
-                                    <TableRow key={supplier.id}>
-                                        <TableCell>{supplier.id}</TableCell>
+                                ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                ?.map((supplier, index) => (
+                                    <TableRow key={supplier.supplierID}>
+                                        <TableCell>{index + 1}</TableCell>
                                         <TableCell>
                                             {supplier.name} 
                                         </TableCell>
                                         <TableCell>{supplier.email}</TableCell>
-                                        <TableCell>
-                                            <Switch
-                                                checked={supplier.is_active}
-                                                onChange={() => handleToggleActive(supplier)}
-                                            />
-                                        </TableCell>
                                         <TableCell>
                                             <Button
                                                 sx={{
@@ -310,7 +335,7 @@ const ManageSupplierTable = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog}>Cancel</Button>
-                    <Button color="error" onClick={handleCloseDialog}>
+                    <Button color="error" onClick={handleDeleteSupplier}>
                         Confirm
                     </Button>
                 </DialogActions>
@@ -331,7 +356,7 @@ const ManageSupplierTable = () => {
                             padding: "1rem",
                         }}
                     >
-                        <Grid item xs={12} size={6}>
+                        <Grid item size={{ xs: 12, sm: 6 }}>
                             <FormLabel htmlFor="name" required style={formLabelStyle}>
                                 Tên nhà cung cấp
                             </FormLabel>
@@ -339,16 +364,18 @@ const ManageSupplierTable = () => {
                                 id="name"
                                 name="name"
                                 type="text"
+                                placeholder="Nhập tên nhà cung cấp"
                                 value={formData.name}
                                 autoComplete="off"
                                 required
                                 size="small"
                                 fullWidth
-                                disabled={true}
+                                disabled={!openEdit}
+                                onChange={handleChange}
                             />
                         </Grid>
 
-                        <Grid item xs={12} size={6}>
+                        <Grid item size={{ xs: 12, sm: 6 }}>
                             <FormLabel htmlFor="email" style={formLabelStyle}>
                                 Email
                             </FormLabel>
@@ -365,16 +392,16 @@ const ManageSupplierTable = () => {
                                 disabled={!openEdit}
                             />
                         </Grid>
-                        <Grid item xs={12} size={6}>
+                        <Grid item size={{ xs: 12, sm: 6 }}>
                             <FormLabel htmlFor="phoneNumber" style={formLabelStyle}>
                                 Số điện thoại
                             </FormLabel>
                             <OutlinedInput
                                 id="phoneNumber"
-                                name="phone_number"
+                                name="phoneNumber"
                                 type="text"
                                 placeholder="Nhập số điện thoại"
-                                value={formData.phone_number}
+                                value={formData.phoneNumber}
                                 onChange={handleChange}
                                 autoComplete="off"
                                 size="small"
@@ -382,7 +409,7 @@ const ManageSupplierTable = () => {
                                 disabled={!openEdit}
                             />
                         </Grid>
-                        <Grid item xs={12} size={6}>
+                        <Grid item size={{ xs: 12, sm: 6 }}>
                             <FormLabel htmlFor="address" style={formLabelStyle}>
                                 Địa chỉ
                             </FormLabel>
@@ -399,7 +426,7 @@ const ManageSupplierTable = () => {
                                 disabled={!openEdit}
                             />
                         </Grid>
-                        <Grid item xs={12} size={12}>
+                        <Grid item size={{ xs: 12, sm: 12 }}>
                             <FormLabel htmlFor="description" style={formLabelStyle}>
                                 Mô tả
                             </FormLabel>
@@ -424,8 +451,8 @@ const ManageSupplierTable = () => {
                     <Button onClick={() => setOpenDialog(false)} color="primary">
                         {selectedDialog === "view" ? "Đóng" : "Hủy"}
                     </Button>
-                    {selectedDialog === "edit" && <Button color="primary">Lưu</Button>}
-                    {selectedDialog === "add" && <Button color="primary">Thêm nhà cung cấp</Button>}
+                    {selectedDialog === "edit" && <Button onClick={handleSaveSupplier} color="primary">Lưu</Button>}
+                    {selectedDialog === "add" && <Button onClick={handleSaveSupplier} color="primary">Thêm nhà cung cấp</Button>}
                 </DialogActions>
             </Dialog>
         </>

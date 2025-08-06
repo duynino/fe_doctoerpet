@@ -47,10 +47,10 @@ const CategorySlider = () => {
             container
             spacing={2}
             my={4}
-            wrap="nowrap" // vẫn dùng nowrap để không xuống dòng
-            sx={{
-                overflowX: "hidden", // không cho phép cuộn ngang
-            }}
+            // wrap="nowrap" // vẫn dùng nowrap để không xuống dòng
+            // sx={{
+            //     overflowX: "hidden", // không cho phép cuộn ngang
+            // }}
         >
             {categories.map((item, index) => (
                 <Grid
@@ -65,6 +65,7 @@ const CategorySlider = () => {
                         flexDirection: "column",
                         alignItems: "center",
                     }}
+                    size={{ xs: 2, sm: 2, md: 2 }} // đảm bảo mỗi item chiếm 1/6 chiều rộng
                 >
                     <Link
                         href={item.href}

@@ -19,16 +19,15 @@ import {
     Grid,
     FormLabel,
     OutlinedInput,
-    FormControl,
-    RadioGroup,
-    FormControlLabel,
-    Radio,
 } from "@mui/material";
 import TablePagination from "@mui/material/TablePagination";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ApiInstance from "../../axios/index"; // Adjust the import path as necessary
 
 const ManageCategoryTable = () => {
     const [categorys, setCategorys] = useState([]);
@@ -42,7 +41,7 @@ const ManageCategoryTable = () => {
     const [openDelete, setOpenDelete] = useState(false);
 
     const [formData, setFormData] = useState({
-        id: "",
+        categoryID: "",
         name: "",
         description: "",
         is_active: true,
@@ -56,36 +55,31 @@ const ManageCategoryTable = () => {
         setPage(0);
     };
 
+    // get data from API or mock data
+    const fetchCategories = async () => {
+        try {
+            const response = await ApiInstance.get("/category/");
+            if (response.status === 200) {
+                setCategorys(response.data);
+            } else {
+                toast.error("Failed to fetch categories");
+            }
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+            toast.error("Failed to fetch categories");
+        }
+    };
+
     useEffect(() => {
         // Chỉ gọi 1 lần khi component được mount
-        setCategorys([
-            {
-                id: 1,
-                name: "Category 1",
-                description: "Description for Category 1",
-                is_active: true,
-            },
-            {
-                id: 2,
-                name: "Category 2",
-                description: "Description for Category 2",
-                is_active: false,
-            },
-            {
-                id: 3,
-                name: "Category 3",
-                description: "Description for Category 3",
-                is_active: true,
-            },
-            // Thêm các category khác nếu cần
-        ]);
+        fetchCategories();
     }, []);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     };
-    
+
     // handle add user
     const handleAddCategory = () => {
         setSelectedDialog("add");
@@ -98,19 +92,7 @@ const ManageCategoryTable = () => {
         });
         setOpenEdit(true);
     };
-    
-    // handle edit user
-    const handleEditCategory = (category) => {
-        setSelectedDialog("edit");
-        setOpenDialog(true);
-        setFormData({
-            id: category.id,
-            name: category.name,
-            description: category.description,
-            is_active: category.is_active,
-        });
-        setOpenEdit(true);
-    };
+
     
     // handle view user
     const handleViewCategory = (category) => {
@@ -124,7 +106,7 @@ const ManageCategoryTable = () => {
         });
         setOpenEdit(false);
     };
-                
+
     const handleCloseDialog = () => {
         setOpenDialog(false);
         setOpenDelete(false);
@@ -133,16 +115,6 @@ const ManageCategoryTable = () => {
         setOpenEdit(false);
     };
 
-    const handleConfirmDelete = (category) => {
-        setSelectedCategory(category);
-        setOpenDelete(true);
-        setSelectedDialog("delete");
-    };
-
-    const handleToggleActive = (category) => {
-        const updatedCategory = categorys.map((u) => (u.id === category.id ? { ...u, active: !u.active } : u));
-        setCategorys(updatedCategory);
-    };
 
     const formLabelStyle = {
         fontWeight: 600,
@@ -167,7 +139,7 @@ const ManageCategoryTable = () => {
                 >
                     <Box sx={{ flex: 0.5 }}>
                         <TextField
-                            label="Search Users"
+                            label="Tìm kiếm theo tên"
                             variant="outlined"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
@@ -207,26 +179,19 @@ const ManageCategoryTable = () => {
                             <TableRow>
                                 <TableCell>ID</TableCell>
                                 <TableCell>Name</TableCell>
-                                <TableCell>Active</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {categorys
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .filter((category) => category.name.toLowerCase().includes(searchTerm))
-                                .map((category) => (
-                                    <TableRow key={category.id}>
-                                        <TableCell>{category.id}</TableCell>
-                                        <TableCell>
-                                            {category.name}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Switch
-                                                checked={category.is_active}
-                                                onChange={() => handleToggleActive(category)}
-                                            />
-                                        </TableCell>
+                                ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                ?.filter((category) =>
+                                    category.name.toLowerCase().includes(searchTerm)
+                                )
+                                ?.map((category) => (
+                                    <TableRow key={category.categoryID}>
+                                        <TableCell>{category.categoryID}</TableCell>
+                                        <TableCell>{category.name}</TableCell>
                                         <TableCell>
                                             <Button
                                                 sx={{
@@ -236,24 +201,6 @@ const ManageCategoryTable = () => {
                                                 onClick={() => handleViewCategory(category)}
                                             >
                                                 <RemoveRedEyeIcon />
-                                            </Button>
-                                            <Button
-                                                sx={{
-                                                    color: "gray",
-                                                    minWidth: 0,
-                                                }}
-                                                onClick={() => handleEditCategory(category)}
-                                            >
-                                                <EditIcon />
-                                            </Button>
-                                            <Button
-                                                sx={{
-                                                    color: "error.main",
-                                                    minWidth: 0,
-                                                }}
-                                                onClick={() => handleConfirmDelete(category)}
-                                            >
-                                                <DeleteIcon />
                                             </Button>
                                         </TableCell>
                                     </TableRow>
@@ -279,10 +226,7 @@ const ManageCategoryTable = () => {
                 <DialogContent>
                     <DialogContentText>
                         Are you sure you want to proceed with this action for category{" "}
-                        <strong>
-                            {selectedCategory?.name}
-                        </strong>
-                        ?
+                        <strong>{selectedCategory?.name}</strong>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -326,7 +270,7 @@ const ManageCategoryTable = () => {
                                 disabled={!openEdit}
                             />
                         </Grid>
-                        
+
                         <Grid item xs={12} size={12}>
                             <FormLabel htmlFor="description" required style={formLabelStyle}>
                                 Mô tả loại sản phẩm
@@ -347,7 +291,6 @@ const ManageCategoryTable = () => {
                                 rows={4}
                             />
                         </Grid>
-
                     </Grid>
                 </DialogContent>
                 <DialogActions>
@@ -355,7 +298,9 @@ const ManageCategoryTable = () => {
                         {selectedDialog === "view" ? "Đóng" : "Hủy"}
                     </Button>
                     {selectedDialog === "edit" && <Button color="primary">Lưu</Button>}
-                    {selectedDialog === "add" && <Button color="primary">Thêm loại sản phẩm</Button>}
+                    {selectedDialog === "add" && (
+                        <Button color="primary">Thêm loại sản phẩm</Button>
+                    )}
                 </DialogActions>
             </Dialog>
         </>

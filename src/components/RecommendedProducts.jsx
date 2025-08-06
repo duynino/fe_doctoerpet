@@ -23,7 +23,7 @@ import imageProduct6 from "../assets/imageProduct/food/Whiskas_dult_Tuna.jpg";
 
 const demoProducts = [
     {
-        id: 1,
+        id: 2,
         productGroupId: "pg_001",
         name: "Royal Canin Kitten 400 g",
         price: 115000,
@@ -31,7 +31,7 @@ const demoProducts = [
         starRating: 4.5,
     },
     {
-        id: 2,
+        id: 8,
         productGroupId: "pg_002",
         name: "Me-O Tuna Flavor 450g",
         price: 54000,
@@ -39,7 +39,7 @@ const demoProducts = [
         starRating: 4.0,
     },
     {
-        id: 3,
+        id: 7,
         productGroupId: "pg_001",
         name: "Me-O Tuna Canned 80g",
         price: 20000,
@@ -47,7 +47,7 @@ const demoProducts = [
         starRating: 4.5,
     },
     {
-        id: 4,
+        id: 3,
         productGroupId: "pg_002",
         name: "Hạt Ganador cún trưởng thành 1,5 kg",
         price: 75000,
@@ -55,7 +55,7 @@ const demoProducts = [
         starRating: 4.0,
     },
     {
-        id: 5,
+        id: 1,
         productGroupId: "pg_001",
         name: "Today Dinner (1 kg) Hạt cho mèo",
         price: 85000,
@@ -65,7 +65,7 @@ const demoProducts = [
     {
         id: 6,
         productGroupId: "pg_001",
-        name: "Today Dinner (1 kg) Hạt cho mèo",
+        name: "Whiskas Adult Tuna 1.2 kg",
         price: 85000,
         image: { src: imageProduct6, alt: "Whiskas Adult Tuna 1.2 kg" },
         starRating: 4.5,
@@ -98,14 +98,15 @@ const RecommendedProducts = () => {
                 <Grid container spacing={2}>
                     {products && products.length > 0 ? (
                         products.map((product) => (
-                            <Grid item xs={12} sm={6} md={2} key={product.id} size={2}>
+                            <Grid item key={product.id} size={{ xs: 6, sm: 6, md: 2 }}>
                                 <Card style={{ height: "100%" }}>
                                     <CardActionArea
                                         component={RouterLink}
                                         to={`/productDetail/${product.id}`}
                                         sx={{ display: "block" }}
                                         onClick={() => {
-                                            window.scrollTo(0, 0);}}
+                                            window.scrollTo(0, 0);
+                                        }}
                                     >
                                         <CardMedia
                                             component="img"
@@ -113,14 +114,16 @@ const RecommendedProducts = () => {
                                             alt={product.name}
                                             style={{
                                                 objectFit: "cover",
+                                                maxHeight: "200px",
+                                                maxWidth: "100%",
                                                 height: "200px",
                                                 width: "100%",
                                             }}
                                         />
                                         <CardContent>
                                             <Typography
-                                                variant="h5"
-                                                component="div"
+                                                variant="h6"
+                                                component="h3"
                                                 style={{ whiteSpace: "pre-line" }}
                                             >
                                                 {product.name}

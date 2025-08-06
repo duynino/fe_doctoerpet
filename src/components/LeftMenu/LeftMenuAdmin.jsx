@@ -28,17 +28,17 @@ const LeftMenuAdmin = ({ role }) => {
   };
 
   const menuItems = {
-    admin: [
+    ADMIN: [
       {
         text: "Manager Product",
         icon: <DashboardOutlined />,
         onClick: () => navigate("/admin/manage-product"),
       },
-      {
-        text: "Manager Account",
-        icon: <GroupIcon />,
-        onClick: () => navigate("/admin/manage-manager"),
-      },
+      // {
+      //   text: "Manager Account",
+      //   icon: <GroupIcon />,
+      //   onClick: () => navigate("/admin/manage-manager"),
+      // },
       {
         text: "Manager Supplier",
         icon: <DashboardOutlined />,
